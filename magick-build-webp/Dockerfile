@@ -1,4 +1,6 @@
-FROM jarjoura/magick-build:buster-slim
+FROM ghcr.io/eklipse2k8/magick-build:bullseye-slim
+
+LABEL org.opencontainers.image.source https://github.com/eklipse2k8/ImageMagickDocker
 
 RUN apt-get update \
     && apt-get install -qq -y curl libjpeg-dev libpng-dev libtiff-dev libgif-dev \

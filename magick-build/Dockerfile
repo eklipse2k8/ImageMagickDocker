@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 ENV LANG="en_US.UTF-8"
 ENV LC_ALL="en_US.UTF-8"

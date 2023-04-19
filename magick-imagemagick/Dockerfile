@@ -1,12 +1,15 @@
-FROM jarjoura/magick-build-heif:buster-slim AS magick-build
+FROM ghcr.io/eklipse2k8/magick-build-heif:bullseye-slim AS magick-build
 
 ENV LD_LIBRARY_PATH="/opt/magick/lib:/opt/magick/lib/aarch64-linux-gnu:/opt/magick/lib/x86_64-linux-gnu"
 ENV PKG_CONFIG_PATH="/opt/magick/lib/pkgconfig"
 ENV MAGICK_PATH="/opt/magick"
 
+COPY --from=ghcr.io/eklipse2k8/magick-build-exiv2:bullseye-slim /opt/magick /opt/magick
+
 RUN apt-get update \
     && apt-get install -y curl libde265-dev libjpeg62-turbo-dev libx265-dev libjpeg-dev libpng-dev libpng16-16 \
       libjpeg-dev libtiff-dev libgif-dev libzip-dev libzstd-dev libltdl-dev liblzma-dev zlib1g-dev libjbig-dev \
+      libxml2-dev libxml2-utils libopenjp2-7-dev liblcms2-dev libexpat1-dev \
     && mkdir -p /build \
     && cd /build \
     && curl -fsSL --http2 https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-58.tar.gz | tar xz \
@@ -32,7 +35,9 @@ RUN apt-get update \
     && rm -rf /opt/magick/lib/cmake \
     && rm -rf /opt/magick/lib/pkgconfig
 
-FROM debian:buster-slim
+FROM debian:bullseye-slim
+
+LABEL org.opencontainers.image.source https://github.com/eklipse2k8/ImageMagickDocker
 
 ENV LANG="en_US.UTF-8"
 ENV LC_ALL="en_US.UTF-8"
@@ -48,7 +53,7 @@ COPY --from=magick-build /opt/magick /opt/magick
 RUN apt-get update \
     && apt-get install -qq --fix-missing -y ca-certificates openssl  \
       libde265-0 libjpeg62-turbo x265 libpng16-16 libtiff5 libgif7 zip zstd libltdl7 \
-      locales libzip4 libgomp1 \
+      locales libzip4 libgomp1 libopenjp2-7 libxml2 liblcms2-2 libexpat1 \
     && sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen \
     && locale-gen \
     && dpkg-reconfigure --frontend noninteractive locales \

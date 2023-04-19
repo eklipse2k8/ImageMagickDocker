@@ -1,4 +1,4 @@
-FROM jarjoura/magick-build:buster-slim AS build-dav1d
+FROM ghcr.io/eklipse2k8/magick-build:bullseye-slim AS build-dav1d
 
 RUN apt-get update \
     && apt-get install -qq -y git nasm ninja-build meson \
@@ -12,9 +12,9 @@ RUN apt-get update \
     && ldconfig ${MAGICK_PATH}/lib \
     && apt-get remove -qq -y --auto-remove nasm ninja-build meson \
     && apt-get clean -qq -y \
-    && rm -rf /var/lib/apt/lists/* 
+    && rm -rf /var/lib/apt/lists/*
 
-FROM jarjoura/magick-build:buster-slim AS build-aom
+FROM ghcr.io/eklipse2k8/magick-build:bullseye-slim AS build-aom
 
 RUN apt-get update \
     && apt-get install -qq -y git nasm libjpeg-dev \
@@ -31,9 +31,9 @@ RUN apt-get update \
     && ldconfig ${MAGICK_PATH}/lib \
     && apt-get remove -qq -y --auto-remove git nasm libjpeg-dev \
     && apt-get clean -qq -y \
-    && rm -rf /var/lib/apt/lists/* 
-    
-FROM jarjoura/magick-build:buster-slim AS build-gav1
+    && rm -rf /var/lib/apt/lists/*
+
+FROM ghcr.io/eklipse2k8/magick-build:bullseye-slim AS build-gav1
 
 RUN apt-get update \
     && apt-get install -qq -y git nasm \
@@ -50,9 +50,9 @@ RUN apt-get update \
     && ldconfig ${MAGICK_PATH}/lib \
     && apt-get remove -qq -y --auto-remove git nasm \
     && apt-get clean -qq -y \
-    && rm -rf /var/lib/apt/lists/* 
+    && rm -rf /var/lib/apt/lists/*
 
-FROM jarjoura/magick-build:buster-slim AS build-sharpyuv
+FROM ghcr.io/eklipse2k8/magick-build:bullseye-slim AS build-sharpyuv
 
 RUN apt-get update \
     && apt-get install -qq -y git \
@@ -68,9 +68,9 @@ RUN apt-get update \
     && ldconfig ${MAGICK_PATH}/lib \
     && apt-get remove -qq -y --auto-remove git \
     && apt-get clean -qq -y \
-    && rm -rf /var/lib/apt/lists/* 
+    && rm -rf /var/lib/apt/lists/*
 
-FROM jarjoura/magick-build:buster-slim AS build-yuv
+FROM ghcr.io/eklipse2k8/magick-build:bullseye-slim AS build-yuv
 
 RUN apt-get update \
     && apt-get install -qq -y git \
@@ -86,9 +86,9 @@ RUN apt-get update \
     && ldconfig ${MAGICK_PATH}/lib \
     && apt-get remove -qq -y --auto-remove git \
     && apt-get clean -qq -y \
-    && rm -rf /var/lib/apt/lists/* 
+    && rm -rf /var/lib/apt/lists/*
 
-FROM jarjoura/magick-build:buster-slim AS build-svt
+FROM ghcr.io/eklipse2k8/magick-build:bullseye-slim AS build-svt
 
 RUN apt-get update \
     && apt-get install -qq -y git nasm \
@@ -104,12 +104,12 @@ RUN apt-get update \
     && ldconfig ${MAGICK_PATH}/lib \
     && apt-get remove -qq -y --auto-remove git nasm \
     && apt-get clean -qq -y \
-    && rm -rf /var/lib/apt/lists/* 
+    && rm -rf /var/lib/apt/lists/*
 
 # FROM rust:1-slim-buster AS build-rav1e
 
 # ENV MAGICK_PATH="/opt/magick"
-# ENV DEBIAN_FRONTEND="noninteractive" 
+# ENV DEBIAN_FRONTEND="noninteractive"
 # ENV PATH="$HOME/.cargo/bin:$PATH"
 
 # RUN apt-get update \
@@ -124,9 +124,9 @@ RUN apt-get update \
 #     && cd / \
 #     && apt-get remove -qq -y --auto-remove libssl-dev pkg-config git nasm \
 #     && apt-get clean -qq -y \
-#     && rm -rf /var/lib/apt/lists/* 
+#     && rm -rf /var/lib/apt/lists/*
 
-FROM jarjoura/magick-build:buster-slim AS build-avif
+FROM ghcr.io/eklipse2k8/magick-build:bullseye-slim AS build-avif
 
 COPY --from=build-dav1d /opt/magick /opt/magick
 COPY --from=build-aom /opt/magick /opt/magick
@@ -149,7 +149,7 @@ RUN apt-get update \
     && cd build \
     && cmake -G Ninja -DCMAKE_INSTALL_PREFIX=${MAGICK_PATH} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON \
       -DAVIF_CODEC_AOM=ON -DAVIF_CODEC_DAV1D=ON -DAVIF_CODEC_RAV1E=OFF -DAVIF_CODEC_LIBGAV1=ON \
-      -DAVIF_CODEC_SVT=ON -DAVIF_BUILD_EXAMPLES=OFF -DAVIF_BUILD_APPS=ON -DAVIF_BUILD_TESTS=OFF .. \ 
+      -DAVIF_CODEC_SVT=ON -DAVIF_BUILD_EXAMPLES=OFF -DAVIF_BUILD_APPS=ON -DAVIF_BUILD_TESTS=OFF .. \
     && cmake --build . -- -j$(nproc) \
     && cmake --install . --prefix ${MAGICK_PATH} \
     && cd / \
@@ -157,4 +157,4 @@ RUN apt-get update \
     && ldconfig ${MAGICK_PATH}/lib \
     && apt-get remove -qq -y --auto-remove curl libjpeg-dev libpng-dev libtiff-dev libgif-dev ninja-build \
     && apt-get clean -qq -y \
-    && rm -rf /var/lib/apt/lists/* 
+    && rm -rf /var/lib/apt/lists/*

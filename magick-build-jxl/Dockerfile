@@ -1,11 +1,13 @@
-FROM jarjoura/magick-build:buster-slim
+FROM ghcr.io/eklipse2k8/magick-build:bullseye-slim
 
-ENV LIBJXL_VERSION=0.8.0 
+LABEL org.opencontainers.image.source https://github.com/eklipse2k8/ImageMagickDocker
+
+ENV LIBJXL_VERSION=0.8.0
 
 ARG TARGETARCH
 
-COPY --from=jarjoura/magick-build-avif:buster-slim /opt/magick /opt/magick
-COPY --from=jarjoura/magick-build-webp:buster-slim /opt/magick /opt/magick
+COPY --from=ghcr.io/eklipse2k8/magick-build-avif:bullseye-slim /opt/magick /opt/magick
+COPY --from=ghcr.io/eklipse2k8/magick-build-webp:bullseye-slim /opt/magick /opt/magick
 
 ENV LD_LIBRARY_PATH="/opt/magick/lib:/opt/magick/lib/aarch64-linux-gnu:/opt/magick/lib/x86_64-linux-gnu"
 
@@ -23,4 +25,4 @@ RUN apt-get update \
     && rm -rf /build \
     && ldconfig ${MAGICK_PATH}/lib \
     && apt-get remove -y --auto-remove git libjpeg-dev libpng-dev libtiff-dev libgif-dev \
-    && rm -rf /var/lib/apt/lists/* 
+    && rm -rf /var/lib/apt/lists/*
